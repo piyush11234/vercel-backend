@@ -1,11 +1,12 @@
 const express = require("express");
 const { expenseInsert, expenseDelete, expenseView } = require("../controller/expanseController.js");
+const authMiddleware = require("../middleware/auth.js");
 
 
 const expenseRouter = express.Router();
 
-expenseRouter.post("/insert", expenseInsert);
-expenseRouter.delete("/delete/:id", expenseDelete);
-expenseRouter.get("/view", expenseView);
+expenseRouter.post("/insert",authMiddleware, expenseInsert);
+expenseRouter.delete("/delete/:id",authMiddleware, expenseDelete);
+expenseRouter.get("/view",authMiddleware, expenseView);
 
 module.exports = expenseRouter;
