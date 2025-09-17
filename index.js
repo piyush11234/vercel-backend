@@ -1,22 +1,22 @@
-let express= require('express');
-let cors = require('cors');
-let mongoose = require('mongoose');
-const expenseRouter = require('./App/routes/web/expenseRoutes');
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
-let app=express();
+const expenseRouter = require('./App/routes/web/expenseRoutes');
+
+const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// connect to mongodb database
-mongoose.connect(process.env.dbUrl).then(()=>{
-    console.log("Connected to MongoDB");
-    app.listen(process.env.PORT, ()=>{
-        console.log(`Server is running on port ${process.env.PORT}`);
-    })
+// connect to MongoDB
+mongoose.connect(process.env.dbUrl)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-}).catch((e)=>{ console.log(err)});
+// routes
+app.use('/api/expense', expenseRouter);
 
-// api
-
-app.use('/api/expense',expenseRouter);
+// ✅ Export app instead of listen (important for Vercel)
+module.exports = app;
