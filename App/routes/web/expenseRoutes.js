@@ -1,12 +1,14 @@
-let express = require('express');
-const { expenseInsert, expenseDelete, expenseView } = require('../../controller/web/expanseController');
-let expenseRouter = express.Router();
+const express = require("express");
+const {
+  expenseInsert,
+  expenseDelete,
+  expenseView,
+} = require("../../controller/web/expenseController");
 
-expenseRouter.post('/insert',expenseInsert);
+const expenseRouter = express.Router();
 
-expenseRouter.delete('/delete/:id',expenseDelete);
+expenseRouter.post("/insert", expenseInsert);
+expenseRouter.delete("/delete/:id", expenseDelete);
+expenseRouter.get("/view", expenseView);
 
-expenseRouter.get('/view',expenseView);
-
-
-module.exports=expenseRouter;
+module.exports = expenseRouter;

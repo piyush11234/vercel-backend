@@ -1,53 +1,64 @@
+const Expense = require("../../models/web/models"); // check this path carefully!
 
-let expenseModal=require('../../models/web/models');
+// Insert Expense
+const expenseInsert = async (req, res) => {
+  try {
+    const { amount, category, date } = req.body;
+    const expense = new Expense({ amount, category, date });
+    const data = await expense.save();
 
-//insert
-
-let expenseInsert=(req,res)=>{
-   
-    let {amount, category, date} = req.body;
-    let expense = new expenseModal({
-        amount: amount,
-        category: category,
-        date: date
+    res.status(200).json({
+      status: 1,
+      message: "Expense added successfully",
+      data,
     });
-    expense.save().then((data) => {
-        res.status(200).json({
-            message: "Expense added successfully",
-            data: data
-        });
-    }).catch((err) => {
-        res.status(500).json({
-            message: "Error adding expense",
-            error: err
-        });
+  } catch (err) {
+    res.status(500).json({
+      status: 0,
+      message: "Error adding expense",
+      error: err.message,
     });
-}
+  }
+};
 
-    // delete
-    let expenseDelete=async(req,res)=>{
-        let expenseId=req.params.id;
-        let deleteExpense=await expenseModal.deleteOne({_id:expenseId});
-        res.send({
-            status:1,
-            message:"Expense deleted successfully",
-            id:expenseId,
-            data:deleteExpense
-        })
-        
-    }
+// Delete Expense
+const expenseDelete = async (req, res) => {
+  try {
+    const expenseId = req.params.id;
+    const deleted = await Expense.deleteOne({ _id: expenseId });
 
-    // view all expenses
-    let expenseView=async(req,res)=>{
-        let expenses=await expenseModal.find();
-        res.send({
-            status:1,
-            message:"All Expenses",
-            data:expenses
-        })
-    }
-   
+    res.status(200).json({
+      status: 1,
+      message: "Expense deleted successfully",
+      id: expenseId,
+      data: deleted,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 0,
+      message: "Error deleting expense",
+      error: err.message,
+    });
+  }
+};
 
+// View All Expenses
+const expenseView = async (req, res) => {
+  try {
+    const expenses = await Expense.find();
 
+    res.status(200).json({
+      status: 1,
+      message: "All Expenses",
+      data: expenses,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 0,
+      message: "Error fetching expenses",
+      error: err.message,
+    });
+  }
+};
 
-module.exports={expenseInsert,expenseDelete,expenseView};
+module.exports = { expenseInsert, expenseDelete, expenseView };
