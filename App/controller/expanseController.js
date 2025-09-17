@@ -1,4 +1,4 @@
-const Expense = require("../../models/web/models"); // check this path carefully!
+const Expense = require("../models/models.js"); // check this path carefully!
 
 // Insert Expense
 const expenseInsert = async (req, res) => {

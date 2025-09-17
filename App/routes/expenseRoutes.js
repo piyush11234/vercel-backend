@@ -1,9 +1,6 @@
 const express = require("express");
-const {
-  expenseInsert,
-  expenseDelete,
-  expenseView,
-} = require("../../controller/web/expenseController");
+const { expenseInsert, expenseDelete, expenseView } = require("../controller/expanseController.js");
+
 
 const expenseRouter = express.Router();
 
