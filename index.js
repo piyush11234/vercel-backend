@@ -4,6 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const expenseRouter = require("./App/routes/expenseRoutes.js");
+const userRouter = require("./App/routes/userRoute.js");
 
 const app = express();
 
@@ -25,6 +26,7 @@ mongoose.connect(process.env.dbUrl, {
 
 // ✅ Routes
 app.use("/api/expense", expenseRouter);
+app.use("/api/user", userRouter);
 
 // ✅ Health Check Route
 app.get("/", (req, res) => {
