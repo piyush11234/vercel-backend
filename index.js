@@ -16,13 +16,27 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// ✅ MongoDB Connection
-mongoose.connect(process.env.dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.error("❌ MongoDB error:", err));
+// ✅ MongoDB Connection Function (Auto-Reconnect)
+const connectDB = async () => {
+  try {
+    if (mongoose.connection.readyState === 1) {
+      return; // already connected
+    }
+    await mongoose.connect(process.env.dbUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ MongoDB connected");
+  } catch (err) {
+    console.error("❌ MongoDB error:", err.message);
+  }
+};
+
+// ✅ Ensure DB connection before routes
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 // ✅ Routes
 app.use("/api/expense", expenseRouter);
@@ -38,8 +52,9 @@ module.exports = app;
 
 // ✅ Local run (only when NODE_ENV=development)
 if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.port || 8080;
-  app.listen(PORT, () => {
+  const PORT = process.env.port || 8000;
+  app.listen(PORT, async () => {
+    await connectDB(); // connect at startup
     console.log(`🚀 Server running at http://localhost:${PORT}`);
   });
 }
